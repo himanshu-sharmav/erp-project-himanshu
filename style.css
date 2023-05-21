@@ -1,0 +1,67 @@
+/* Styles for the to-do list container */
+.todo-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for the input fields */
+.input-container {
+  margin-bottom: 10px;
+}
+
+/* Styles for the buttons */
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Styles for the to-do list */
+.todo-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.todo-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.todo-item span {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.todo-item .title-span {
+  font-weight: bold;
+}
+
+.todo-item .description-span {
+  font-style: italic;
+}
+
+.todo-item .timestamp-span {
+  font-size: 12px;
+  color: #888;
+}
+
+.todo-item .edit-button,
+.todo-item .delete-button {
+  font-size: 14px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.todo-item .edit-button:hover,
+.todo-item .delete-button:hover {
+  background-color: #eee;
+}

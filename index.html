@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Modifier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <style>
+  body {
+    background: rgb(2, 0, 36);
+<!--    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);-->
+
+  }
+
+  #cont {
+    border-radius: 20px;
+    background: rgb(2, 0, 36);
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 121, 71, 1) 0%, rgba(0, 212, 255, 1) 100%);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 20px;
+    padding-left: 20px;
+    border-bottom: solid 10px #ceff5c;
+    border-top: solid 10px #ceff5c;
+  }
+
+  #data {
+    text-align: center;
+    font-size: medium;
+  }
+
+  .todoList {
+    border-radius: 20px;
+    font-size: medium;
+    background: white;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .task-buttons button {
+    height: 30px;
+    border-radius: 20px;
+    margin-left: 5px;
+  }
+
+  .task-buttons button.edit {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .task-buttons button.delete {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .task-buttons button.status {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .task-pending {
+    background-color: #ffc107 !important;
+    color: white;
+  }
+
+  .task-completed {
+    background-color: #28a745 !important;
+    color: white;
+  }
+
+
+    </style>
+</head>
+<body>
+<script>
+    function SaveData() {
+      var title = document.getElementById("title").value;
+      var description = document.getElementById("description").value;
+
+      if (title.length <= 0 || description.length <= 0) {
+        alert("Please enter both title and description");
+        return;
+      }
+
+      let user_records = JSON.parse(localStorage.getItem("users")) || [];
+      var duplicate = user_records.find((task) => task.title === title);
+
+      if (duplicate) {
+        alert("Duplicate data");
+        return;
+      }
+
+      var task = {
+        title: title,
+        description: description,
+        time: new Date().toLocaleString(),
+        completed: false,
+      };
+
+      user_records.push(task);
+      localStorage.setItem("users", JSON.stringify(user_records));
+
+      showItems();
+      alert("Your task has been saved");
+      document.getElementById("newForm").reset();
+    }
+
+    function showItems() {
+      let user_records = JSON.parse(localStorage.getItem("users")) || [];
+
+      var html = "";
+      var item = document.querySelector(".todoLists");
+
+      user_records.forEach((task, index) => {
+        html += `
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="todoList">
+                <p class="pText">
+                  <strong>Title:</strong> ${task.title}<br>
+                  <strong>Description:</strong> ${task.description}<br>
+                  <strong>Time:</strong> ${task.time}
+                </p>
+                <div class="task-buttons">
+                  <button class="btn btn-primary task-status ${task.completed ? 'task-completed' : 'task-pending'}" onClick="toggleStatus(${index})">${task.completed ? "Completed" : "Pending"}</button>
+                  <button class="btn btn-primary" onClick="deleteItem(${index})">Delete</button>
+                  <button class="btn btn-primary" onClick="editItem(${index})">Edit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      item.innerHTML = html;
+    }
+
+    function toggleStatus(index) {
+      let user_records = JSON.parse(localStorage.getItem("users")) || [];
+
+      user_records[index].completed = !user_records[index].completed;
+      localStorage.setItem("users", JSON.stringify(user_records));
+
+      showItems();
+    }
+
+    function deleteItem(index) {
+      let user_records = JSON.parse(localStorage.getItem("users")) || [];
+
+      user_records.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(user_records));
+
+      showItems();
+
+      alert("You have deleted an entry");
+    }
+
+    function editItem(index) {
+      let user_records = JSON.parse(localStorage.getItem("users")) || [];
+
+      var task = user_records[index];
+      document.getElementById("title").value = task.title;
+      document.getElementById("description").value = task.description;
+
+      user_records.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(user_records));
+
+      showItems();
+    }
+
+    function clearTasks() {
+      localStorage.clear();
+      showItems();
+    }
+
+    window.onload = function() {
+      showItems();
+    };
+  </script>
+
+<div class="container col-lg-5 mb-5 mt-5" id="cont">
+    <center>
+        <h1>ToDo List</h1>
+    </center><br>
+
+    <form id="newForm">
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" placeholder="Title" id="title" class="form-control">
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" placeholder="Description" id="description" class="form-control">
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col">
+                <button type="button" id="add" onclick="SaveData()" class="btn btn-primary">Add Task</button>
+            </div>
+        </div>
+    </form><br>
+
+    <h2>Saved Tasks</h2>
+
+    <div class="todoLists"></div>
+
+    <br><br><br>
+    <center>
+        <button class="btn btn-primary" onclick="clearTasks()">Clear all Tasks</button>
+    </center>
+</div>
+</body>
+</html>
